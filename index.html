@@ -121,7 +121,7 @@
     src: "./fondo.jpg"
   };
 
-  let assets = [];
+  //let assets = [];
   let music = null;
   let meowSound, meowImg;
   let bolas = [];
@@ -136,25 +136,23 @@
   ];
 
   // Cargar lista de gatos desde archivo
-  async function cargarListaGatos() {
-    try {
-      const response = await fetch('cats-index.txt');
-      if (!response.ok) throw new Error('No se pudo cargar cats-index.txt');
-      const text = await response.text();
-      assets = text.split('\n')
-        .map(line => line.trim())
-        .filter(line => line && !line.startsWith('//'))
-        .map(file => `./files/${file}`);
-      
-      console.log('Gatos cargados:', assets.length);
-    } catch (error) {
-      console.error('Error cargando lista de gatos:', error);
-      // Lista por defecto si falla
-      assets = [
-        "https://i.ytimg.com/vi/_yqSbnbUsj4/sddefault.jpg"
-      ];
-    }
-  }
+  
+	function cargarAssets() {
+		return new Promise((resolve) => {
+			const script = document.createElement('script');
+			script.src = 'assets.js';
+			script.onload = () => {
+				console.log('Assets cargados:', assets.length);
+				resolve();
+			};
+			script.onerror = () => {
+				console.error('Error cargando assets.js, usando lista por defecto');
+				assets = ["./files/a new guest.jpg"];
+				resolve();
+			};
+			document.head.appendChild(script);
+		});
+	}
 
   // Sistema de música mejorado
   function cargarMusica() {
@@ -418,7 +416,7 @@
   }
 
   async function iniciar() {
-    await cargarListaGatos();
+    await cargarAssets();
     
     const initialCount = minBolas + Math.floor(Math.random() * (maxBolas - minBolas));
     for (let i = 0; i < initialCount && assets.length > 0; i++) {
