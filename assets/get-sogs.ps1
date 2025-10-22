@@ -1,7 +1,7 @@
 # generar-assets.ps1
-$folder = ".\files"
+$folder = ".\sogs"
 $extensions = @("*.jpg", "*.jpeg", "*.png", "*.gif", "*.webp")
-$outputFile = "assets.js"
+$outputFile = "sog-index.js"
 
 $files = foreach ($ext in $extensions) {
     Get-ChildItem -Path $folder -Filter $ext -File -Recurse
@@ -12,7 +12,7 @@ $files = $files | Sort-Object Name
 # Crear contenido JavaScript
 $jsContent = "const assets = ["
 foreach ($file in $files) {
-    $jsContent += "`n  `"./files/$($file.Name)`","
+    $jsContent += "`n  `"./sogs/$($file.Name)`","
 }
 $jsContent = $jsContent.TrimEnd(',')
 $jsContent += "`n];"
